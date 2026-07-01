@@ -1,0 +1,64 @@
+
+   <div class="product-card bg-white" [class.out-of-stock]="!product().inStock">
+  
+          <!-- Badge -->
+          <div class="badge-wrap">
+            <span class="category-badge">{{ product().category }}</span>
+            @if (!product().inStock) {
+              <span class="stock-badge out">غير متاح</span>
+            } @else {
+              <span class="stock-badge in">متاح</span>
+            }
+          </div>
+  
+          <!-- Image -->
+          <div class="product-image-wrap">
+            <img 
+              [src]="product().imageUrl" 
+              [alt]="product().name" 
+              class="product-image" 
+              [attr.loading]="idx() < 4 ? 'eager' : 'lazy'"
+              [attr.fetchpriority]="idx() < 2 ? 'high' : null" 
+            />
+            <div class="image-overlay">
+              <button class="wishlist-btn"  title="أضف للمفضلة">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+  
+          <!-- Info -->
+          <div class="product-info">
+            <h2 class="product-name">{{ product().name }}</h2>
+            <p class="product-desc">{{ product().description }}</p>
+  
+            <!-- Rating -->
+            <div class="rating-row">
+              <div class="stars">
+                @for (star of getStars(product().rating); track star) {
+                  <svg class="star" [class.filled]="star <= product().rating" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                }
+              </div>
+              <span class="rating-value">{{ product().rating }}</span>
+              <span class="review-count">({{ product().reviewCount | number }})</span>
+            </div>
+  
+            <!-- Price & Cart -->
+            <div class="product-footer">
+              <span class="product-price">${{ product().price | number }}</span>
+              <button
+                class="add-to-cart-btn"
+                [disabled]="!product().inStock"
+                
+              >
+              <mat-icon>shopping_cart</mat-icon>
+                {{ product().inStock ? 'Add To Cart' : 'Not Available' }}
+              </button>
+            </div>
+          </div>
+  
+        </div>

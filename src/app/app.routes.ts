@@ -6,10 +6,10 @@ export const routes: Routes = [
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: '/Products'
+        redirectTo: '/products/All'
     },
     {
-        path: 'Products',
+        path: 'products/:category',
         loadComponent: () => import('./pages/products-grid/products-grid'),
     },
     {

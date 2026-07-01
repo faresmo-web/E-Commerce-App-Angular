@@ -154,19 +154,9 @@ mat-form-field {
 mat-sidenav {
   @include mat.sidenav-overrides(
     (
-      container-width: 250px,
+      container-width: 230px,
       container-shape: 0px,
       container-background-color: white,
-      container-divider-color: var(--mat-sys-outline-variant),
-    )
-  );
-
-  @include mat.list-overrides(
-    (
-      active-indicator-color: var(--mat-sys-primary),
-      active-indicator-shape: 6px,
-      list-item-one-line-container-height: 40px,
-      list-item-label-text-color: red,
     )
   );
 }

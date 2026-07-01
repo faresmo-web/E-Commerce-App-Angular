@@ -1,1 +1,74 @@
-<p>products-grid works!</p>
+<mat-sidenav-container>
+
+  <!-- ═══════════ Sidebar ═══════════ -->
+  <mat-sidenav mode="side" opened="true">
+    <div class="sidebar-inner">
+
+      <div class="sidebar-brand">
+        <div class="brand-icon">
+          <mat-icon>store</mat-icon>
+        </div>
+        <span class="brand-label">Browse</span>
+      </div>
+
+      <p class="sidebar-section-label">Categories</p>
+
+      @for (c of categories(); track c) {
+        <a class="nav-item"
+          
+           [class.active]="c === category()"
+           [routerLink]="['/products', c]">
+          <mat-icon class="nav-icon">
+            {{ c === 'All' ? 'apps' :
+               c === 'Audio' ? 'headphones' :
+               c === 'Wearables' ? 'watch' :
+               c === 'Home' ? 'home' :
+               c === 'Kitchen' ? 'kitchen' :
+               c === 'Fashion' ? 'checkroom' :
+               c === 'Workspace' ? 'computer' :
+               c === 'Tech' ? 'devices' :
+               c === 'Fitness' ? 'fitness_center' :
+               c === 'Outdoors' ? 'terrain' :
+               c === 'Photography' ? 'camera_alt' :
+               c === 'Accessories' ? 'bag' :
+               c === 'Furniture' ? 'chair' :
+               c === 'Stationery' ? 'edit' :
+               c === 'Beauty' ? 'auto_awesome' : 'category' }}
+          </mat-icon>
+          <span class="nav-label">{{ c }}</span>
+        </a>
+      }
+
+    </div>
+  </mat-sidenav>
+
+  <!-- ═══════════ Main Content ═══════════ -->
+  <mat-sidenav-content>
+    <div class="content-area">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="header-content">
+          <p class="breadcrumb">
+            <span>Store</span>
+            <span class="sep">›</span>
+            <span>{{ category() }}</span>
+          </p>
+          <h1 class="page-title">{{ category() }}</h1>
+          <p class="product-count">{{ filteredProducts().length }} products found</p>
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="products-area">
+        <div class="responsive-grid">
+          @for (product of filteredProducts(); track product.id; let idx = $index) {
+            <app-product-card [product]="product" [idx]="idx"/>
+          }
+        </div>
+      </div>
+
+    </div>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>
