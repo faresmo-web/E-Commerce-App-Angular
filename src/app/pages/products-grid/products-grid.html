@@ -63,7 +63,9 @@
       <div class="products-area">
         <div class="responsive-grid">
           @for (product of filteredProducts(); track product.id; let idx = $index) {
-            <app-product-card [product]="product" [idx]="idx"/>
+            <app-product-card [product]="product" [idx]="idx">
+              <app-toggle-wishlist-button [product]="product" />
+            </app-product-card>
           }
         </div>
       </div>

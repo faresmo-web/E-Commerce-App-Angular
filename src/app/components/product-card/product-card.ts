@@ -1,7 +1,8 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { Product } from '../../models/product';
 import { CommonModule } from '@angular/common';
 import { MatIcon } from "@angular/material/icon";
+import { EcommerceStore } from '../../Ecommerce-Store';
 
 @Component({
   selector: 'app-product-card',
@@ -10,6 +11,8 @@ import { MatIcon } from "@angular/material/icon";
   styleUrl: './product-card.scss',
 })
 export class ProductCard {
+  
+
 
   getStars(rating: number): number[] {
     return [1, 2, 3, 4, 5];
@@ -17,4 +20,6 @@ export class ProductCard {
 
   product = input.required<Product>();
   idx = input<number>(999);
+
+ 
 }
