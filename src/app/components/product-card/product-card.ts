@@ -12,7 +12,7 @@ import { EcommerceStore } from '../../Ecommerce-Store';
 })
 export class ProductCard {
   
-
+  store = inject(EcommerceStore)
 
   getStars(rating: number): number[] {
     return [1, 2, 3, 4, 5];

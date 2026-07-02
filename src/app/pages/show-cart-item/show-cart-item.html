@@ -1,0 +1,26 @@
+<div class="cart-item">
+    <!-- Product Info -->
+    <div class="product-info">
+        <img class="product-image" [src]="item().product.imageUrl" [alt]="item().product.name">
+        <div class="product-details">
+            <div class="product-name">{{ item().product.name }}</div>
+            <div class="product-price">${{ item().product.price }}</div>
+        </div>
+    </div>
+
+    <!-- Qty Selector -->
+    <app-qty-selector [quantity]="item().quantity" (qtyUpdated)="store.setItemQuantity({productId: item().product.id, quantity: $event})"/>
+
+    <!-- Total + Actions -->
+    <div class="item-actions">
+        <div class="item-total">{{ total() }}</div>
+        <div class="action-buttons">
+            <button matIconButton (click)="store.moveToWishlist(item().product)">
+                <mat-icon>favorite_border</mat-icon>
+            </button>
+            <button (click)="store.removeFromCart(item().product)" matIconButton class="danger">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>
