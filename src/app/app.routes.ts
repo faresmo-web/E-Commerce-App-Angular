@@ -17,7 +17,17 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/my-wishlist/my-wishlist')
     },
     {
+        path: 'Checkout',
+        loadComponent: () => import('./pages/checkout/checkout')
+    },
+    {
+        path: 'OrderSuccess',
+        loadComponent: () => import('./pages/order-success/order-success')
+    },
+    {
         path: 'Cart',
         loadComponent: () => import('./pages/view-cart/view-cart')
-    }
+    },
+
+
 ];

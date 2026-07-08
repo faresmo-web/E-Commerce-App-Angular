@@ -5,25 +5,36 @@ import productsData from "./pages/products-grid/products.json";
 import { produce} from 'immer'
 import { Toaster } from "./services/toaster";
 import { CartItem } from "./models/cart";
+import { MatDialog } from "@angular/material/dialog";
+import { SignInDialog } from "./components/sign-in-dialog/sign-in-dialog";
+import { SignInParams, SignUpParams, User } from "./models/user";
+import { Router } from "@angular/router";
+import { Order } from "./models/order";
+import { withStorageSync } from "@angular-architects/ngrx-toolkit";
+
 
 export type EcommerceState = {
   products: Product[];
   category: string;
   wishlistItems: Product[];
   cartItems: CartItem[];
+  user: User | undefined;
+  loading: boolean;
 };
 
 const initialState: EcommerceState = {
     products: productsData as Product[],
     category: 'All',
     wishlistItems: [],
-    cartItems: []
+    cartItems: [],
+    user: undefined,
+    loading: false
 };
 
 export const EcommerceStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-
+  withStorageSync({key: 'modern-store', select: ({wishlistItems, cartItems, user}) => ({ wishlistItems, cartItems, user })}),
   withComputed(({ category, products, wishlistItems, cartItems }) => ({
     filteredProducts: computed(() => {
       if (category() === 'All') {
@@ -37,7 +48,7 @@ export const EcommerceStore = signalStore(
     cartCount: computed(() => cartItems().reduce((acc, item) => acc + item.quantity, 0)),
   })),
 
-  withMethods((store, toaster = inject(Toaster)) => ({
+  withMethods((store, toaster = inject(Toaster), matDialog = inject(MatDialog), router = inject(Router)) => ({
     setCategory(category: string) {
       patchState(store, { category });
     },
@@ -115,6 +126,90 @@ export const EcommerceStore = signalStore(
       patchState(store, {
         cartItems: store.cartItems().filter((c) => c.product.id !== product.id),
       })
+    },
+
+    proceedToCheckout: () => {
+      if(!store.user()) {
+         matDialog.open(SignInDialog, {
+          disableClose: true,
+          data:{
+            checkout: true
+          }
+        })
+        return
+      }
+      router.navigate(['/Checkout'])
+       
+    },
+
+    signIn:({email, password, checkout, dialogId}: SignInParams) => {
+      patchState(store, {
+        user: {
+          id: '1',
+          email,
+          name: 'Fares',
+          imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+        } 
+      })
+
+      matDialog.getDialogById(dialogId)?.close();
+
+      if(checkout) {
+        router.navigate(['/Checkout'])
+      }
+    },
+
+    signUp:({email, password, name, checkout, dialogId}: SignUpParams) => {
+      patchState(store, {
+        user: {
+          id: '1',
+          email,
+          name: 'Fares',
+          imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+        } 
+      })
+
+      matDialog.getDialogById(dialogId)?.close();
+
+      if(checkout) {
+        router.navigate(['/Checkout'])
+      }
+    },
+
+
+    signOut: () => {
+      patchState(store, { user: undefined })
+    },
+
+    placeOrder: async() => {
+      patchState(store, {loading: true});
+
+      const user = store.user()
+      
+
+      if(!user) {
+        toaster.error('You must be logged in to place an order');
+        patchState(store, {loading: false});
+        return;
+      }
+
+
+
+      const order: Order ={
+        id: crypto.randomUUID(),
+        userId: user.id,
+        total: Math.round(store
+          .cartItems()
+          .reduce((acc, item) => acc + item.quantity * item.product.price, 0)),
+        items: store.cartItems(),
+        paymentStatus: "success"
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      
+      patchState(store, {loading: false, cartItems: [], })  
+
+      router.navigate(['/OrderSuccess'])
     }
 
   })),
