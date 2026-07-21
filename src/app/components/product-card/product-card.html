@@ -1,5 +1,5 @@
 
-   <div class="product-card bg-white" [class.out-of-stock]="!product().inStock">
+   <div [routerLink]="['/product', product().id]" class="product-card bg-white" [class.out-of-stock]="!product().inStock">
   
           <!-- Badge -->
           <div class="badge-wrap">
@@ -19,6 +19,7 @@
               class="product-image" 
               [attr.loading]="idx() < 4 ? 'eager' : 'lazy'"
               [attr.fetchpriority]="idx() < 2 ? 'high' : null" 
+              [routerLink]="['/product', product().id]"
             />
             <div class="image-overlay">
               <ng-content/>

@@ -1,5 +1,5 @@
 import { computed, inject } from "@angular/core";
-import { patchState, signalStore, withComputed, withMethods, withState } from "@ngrx/signals";
+import { patchState, signalMethod, signalStore, withComputed, withMethods, withState } from "@ngrx/signals";
 import { Product } from "./models/product";
 import productsData from "./pages/products-grid/products.json";
 import { produce} from 'immer'
@@ -19,6 +19,7 @@ export type EcommerceState = {
   wishlistItems: Product[];
   cartItems: CartItem[];
   user: User | undefined;
+  selectedProductId: number | undefined
   loading: boolean;
 };
 
@@ -28,14 +29,15 @@ const initialState: EcommerceState = {
     wishlistItems: [],
     cartItems: [],
     user: undefined,
-    loading: false
+    loading: false,
+    selectedProductId: undefined,
 };
 
 export const EcommerceStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withStorageSync({key: 'modern-store', select: ({wishlistItems, cartItems, user}) => ({ wishlistItems, cartItems, user })}),
-  withComputed(({ category, products, wishlistItems, cartItems }) => ({
+  withComputed(({ category, products, wishlistItems, cartItems, selectedProductId }) => ({
     filteredProducts: computed(() => {
       if (category() === 'All') {
         return products();
@@ -46,12 +48,17 @@ export const EcommerceStore = signalStore(
     }),
     wishlistCount: computed(() => wishlistItems().length),
     cartCount: computed(() => cartItems().reduce((acc, item) => acc + item.quantity, 0)),
+    selectedProduct: computed(() => products().find(p => p.id === selectedProductId()))
   })),
 
   withMethods((store, toaster = inject(Toaster), matDialog = inject(MatDialog), router = inject(Router)) => ({
     setCategory(category: string) {
       patchState(store, { category });
     },
+
+    setProductId: signalMethod<number>((productId: number) => {
+      patchState(store, { selectedProductId: productId })
+    }),
 
      addToWishlist: (product: Product) => {
        const updatedWishlistItems = produce(store.wishlistItems(), (draft) => {
